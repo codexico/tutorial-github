@@ -1,0 +1,92 @@
+<p>Ultimamente estou envolvido em v&aacute;rios projetos ao mesmo tempo com v&aacute;rias equipes diferentes, ent&atilde;o controle de vers&atilde;o &eacute; essencial.</p>
+<p>Segue um manualzinho b&aacute;sico para iniciar com o git, espero atualizar e complementar este passo-a-passo com mais exemplos logo.</p>
+<p>O git serve para versionamento local, voc&ecirc; pode compartilhar de algumas maneiras, a mais f&aacute;cil &eacute; com servi&ccedil;os online. Neste exemplo vou usar o <a href="http://github.com" target="_blank" title="github - Social Coding">github</a>, testei tamb&eacute;m o <a href="http://projectlocker.com/" target="_blank" title="Project Locker">projectlocker</a>, que d&aacute; reposit&oacute;rios private gr&aacute;tis,&nbsp; mas n&atilde;o gostei. Outro que parece legal é o  <a href="http://codaset.com/" target="_blank" title="Codaset">Codaset</a>, ainda não testei.</p>
+<h3>1) Instalar git</h3>
+<p><code>$ sudo apt-get install git-core</code></p>
+<p>&Eacute; necess&aacute;rio gerar uma chave ssh e fazer um cadastro em algum reposit&oacute;rio git. ( Esta etapa n&atilde;o &eacute; exatamente sobre o git, mas sobre a seguran&ccedil;a dos reposit&oacute;rios. )</p>
+<p>Confira se vc j&aacute; tem alguma chave com um &quot;ls ~/.ssh/&quot;, se j&aacute; existir uma voc&ecirc; pode utiliz&aacute;-la ou gerar uma nova:</p>
+<p><code>ssh-keygen -t rsa -C "comment"</code></p>
+<p>&quot;comment&quot; &eacute; s&oacute; um lembrete para saber do que se trata a chave, normalmente usa-se o seu nome de usu&aacute;rio do servi&ccedil;o que vai usar, por exemplo o github.</p>
+<p>Falando nisso, est&aacute; na hora de criar um usu&aacute;rio l&aacute; (http://github.com), vai lá que eu espero...</p>
+<p>Depois de logado v&aacute; para <a href="https://github.com/account">https://github.com/account</a> e clique em &quot;SSH Public Keys&quot; e &quot;add another public key&quot;. A c&oacute;pia da chave precisa ser exata(eu ia escrever que &#39;precisa ser precisa&#39; mas &eacute; feio n&eacute;), ent&atilde;o pode-se fazer assim:</p>
+<p><code>sudo apt-get install xclip
+cat ~/.ssh/id_rsa.pub | xclip -sel clip</code></p>
+<p>A&iacute; &eacute; s&oacute; colar com um Ctrl+V normal. Agora j&aacute; d&aacute; para se comunicar com o github:</p>
+<p><code>ssh git@github.com</code></p>
+<p>Vai aparecer &quot;ERROR: Hi codexico! You&#39;ve successfully authenticated, but GitHub does not provide shell access&quot;, n&atilde;o se assuste com o ERROR, o que interessa &eacute; que o github te reconheceu. Qualquer duvida tem o help do github: <a href="http://help.github.com/linux-key-setup/" target="_blank" title="Generating SSH keys (Linux)">Generating SSH keys (Linux).</a></p>
+<p>Por padr&atilde;o o git vai pegar o usu&aacute;rio do sistema, para que seu nome de usu&aacute;rio do github apare&ccedil;a corretamente use os comandos:</p>
+<p><code>git config --global user.name "Your Name"
+git config --global user.email codexico@gmail.com</code></p>
+<h3>2) Criar Projeto no github</h3>
+<p>1) Podemos criar um novo projeto ou usar um existente. Para criar um novo v&aacute; at&eacute; o github e no alto da p&aacute;gina clique em &quot;Dashboard&quot; e depois em &quot;New Repository&quot;.</p>
+<p>Crie um espaço para o projeto no comnputador:</p>
+<p><code>$ mkdir nomedoprojeto
+$ cd nomedodiretorio</code></p>
+<p>2) Iniciar um git neste diret&oacute;rio:</p>
+<p><code>$ git init</code></p>
+<p>Sa&iacute;da do comando:</p>
+<p><code>Initialized empty Git repository in /nomedodiretorio/.git/</code></p>
+<p>Deve aparecer um diretorio oculto <strong>.git</strong>, neste <strong>.git</strong> ficam as configura&ccedil;&otilde;es que ser&atilde;o usadas para este projeto.</p>
+<p>Por exemplo:</p>
+<p><code>$ ls .git
+branches config description FETCH_HEAD HEAD hooks index info logs
+objects refs</code></p>
+<p>3) Adicionar o reposit&oacute;rio, neste exemplo vou usar um que criei para este tutorial, pode ser também o repositório criado no passo 1, o endereço fica na página do projeto (neste caso https://github.com/codexico/tutorial-github):</p>
+<p><code>$ git remote add origin git@github.com:codexico/tutorial-github.git</code></p>
+<p>Formato do comando:</p>
+<p>&quot;git remote add&quot; adiciona um reposit&oacute;rio ao git que foi iniciado neste diret&oacute;rio, &quot;origin&quot; &eacute; o apelido para o projeto, &quot;git@github.com:codexico/tutorial-github.git&quot; &eacute; o endere&ccedil;o do projeto.</p>
+<p>Resultado:(apareceu a parte <em>[remote &quot;origin&quot;]</em>)</p>
+<p><code>$ cat .git/config
+	[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	[remote "origin"]
+	url = git@github.com:codexico/tutorial-github.git
+	fetch = +refs/heads/*:refs/remotes/origin/*</code></p>
+<p>4) Baixar(pull=puxar) o projeto:</p>
+<p><code>$ git pull origin master</code></p>
+<p>Formato do comando:</p>
+<p><code>git pull apelidoDaOrigem apelidoParaDestino</code></p>
+<p>Sa&iacute;da do comando:</p>
+<p><code>remote: Counting objects: 52278, done.
+	remote: Compressing objects: 100% (10917/10917), done.
+	remote: Total 52278 (delta 40975), reused 51715 (delta 40669)
+	Receiving objects: 100% (52278/52278), 8.33 MiB | 189 KiB/s, done.
+	Resolving deltas: 100% (40975/40975), done.
+	From git@github.com:codexico/tutorial-github.git
+	* branch  master -> FETCH_HEAD</code></p>
+<h3>3) Usar o git</h3>
+<p>Exemplo (escolha um nome diferente para o arquivo teste):</p>
+<p><code>$ touch testegit</code></p>
+<p>1) Adicionar as altera&ccedil;&otilde;es:</p>
+<p>- Podemos adicionar somente uma altera&ccedil;&atilde;o:</p>
+<p><code>$ git add testegit</code></p>
+<p>- Ou adicionar todas as altera&ccedil;&otilde;es:</p>
+<p><code>$ git add .</code></p>
+<p>Neste passo as altera&ccedil;&otilde;es ainda n&atilde;o est&atilde;o sob o controle de vers&atilde;o, elas somente foram adicionadas para quando der um commit.</p>
+<p>2) Comitar as altera&ccedil;&otilde;es:</p>
+<p><code>$ git commit -m "mensagem teste para o tutorial"</code></p>
+<p>&Eacute; obrigat&oacute;rio acrescentar uma mensagem.</p>
+<p>Sa&iacute;da do comando:</p>
+<p><code>[master de2f5ce] teste para o tutorial
+	1 files changed, 1 insertions(+), 0 deletions(-)
+	create mode 100644 testegit</code></p>
+<p>Agora as altera&ccedil;&otilde;es foram adicionadas ao controle de vers&atilde;o. Mas ainda est&atilde;o somente na m&aacute;quina local.</p>
+<p>3) Enviar(push=empurrar) as altera&ccedil;&otilde;es:</p>
+<p><code>$ git push origin master</code></p>
+<p>Sa&iacute;da do comando:</p>
+<p><code>Counting objects: 4, done.
+	Delta compression using up to 2 threads.
+	Compressing objects: 100% (2/2), done.
+	Writing objects: 100% (3/3), 288 bytes, done.
+	Total 3 (delta 1), reused 0 (delta 0)
+	To git@github.com:codexico/tutorial-github.git
+	3be4c21..de2f5ce&nbsp; master -> master</code></p>
+<p>Se durante o tempo em que fez o pull e o push outra pessoa que tamb&eacute;m participe do projeto fez altera&ccedil;&otilde;es o push ser&aacute; rejeitado. Ent&atilde;o &eacute; necess&aacute;rio atualizar o projeto local antes de enviar novas altera&ccedil;&otilde;es.</p>
+<p><code>$ git fetch origin</code></p>
+<p>Atualizar antes de enviar &eacute; uma boa pr&aacute;tica a ser seguida para quem usa svn ou cvs e &eacute; obrigat&oacute;ria no git.</p>
+<p>4)Pronto, confira as altera&ccedil;&otilde;es no navegador acessando o endere&ccedil;o do projeto (http://github.com/codexico/tutorial-github neste exemplo).</p>
+<p>Dica final: para que n&atilde;o precise digitar sempre a senha do ssh siga os passos desse link: http://help.github.com/working-with-key-passphrases/</p>
+<p>Atualizado em 09/09/2010, mudei o reposit&oacute;rio e adicionei instru&ccedil;&otilde;es para gerar a chave ssh.</p>
