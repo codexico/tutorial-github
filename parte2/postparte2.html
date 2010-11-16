@@ -1,0 +1,119 @@
+ 
+A parte 1 (<a href="http://codexico.com.br/blog/linux/tutorial-simples-como-usar-o-git-e-o-github">Como usar o git e o github</a>) foi sobre instalar o git, ssh-key, criar um projeto no github e  os commits básicos.
+
+Em projetos super simples tudo bem, mas para qualquer coisa maiorzinha já é melhor usar branchs, é fácil também, nem tirei o <em>simples</em> do título do post.
+
+Vou abordar os branchs de forma educacional, como se fosse um  projeto de uma só pessoa. A parte 3 trará uma visão mais prática, com um fluxo de trabalho completo e voltado para equipes, graças ao git ainda será simples.
+
+Será usado o mesmo <a href="https://github.com/codexico/tutorial-github">repositório da parte 1</a>.
+
+<h3>Branch</h3>
+
+Para criar um branch no diretório do projeto:
+
+<code>git branch parte2</code>
+
+Atenção, somente foi criado o branch, o git não mudou para ele, qualquer alteração ou commit será feito no master. O git mostra onde está:
+
+<code> git branch
+* master
+  parte2</code>
+
+Para mudar para o branch é necessário um checkout:
+
+<code>git checkout parte2
+Switched to branch 'parte2'</code>
+
+Os dois passos podem ser substituídos por um só (mas é sempre bom saber de onde veio):
+
+<code>git checkout -b parte2</code>
+
+Agora sim as modificações serão feitas no branch correto. Que tal criar um diretório, uns arquivos e também alterar o README da parte 1?
+<code>mkdir parte2
+touch parte2/testeparte2
+git add .
+git commit -m "arquivo para testes da parte2"
+vim README
+git commit -a -m "README parte2"
+</code>
+
+Foram criados dois commits, ambos no branch <em>parte2</em>, um push agora não irá alterar nada no repositório.
+
+<h3>Merge</h3>
+
+Para enviar as modificações é necessário primeiro um checkout para voltar ao master, depois o merge com o branch e então o push.
+
+Dica: TAB autocompleta os comandos e também os nomes dos branchs.
+
+<code>git checkout master
+git merge parte2
+git push origin master</code>
+
+Foi enviado o código mas o github não percebeu que havia um branch pois o branch está somente na máquina local, para enviar o branch ao repositório o push muda um pouco:
+
+<code>git push origin parte2:parte2</code>
+
+O formato é o seguinte <em>git push repositorioRemoto nomeLocalDoBranch:nomeRemotoDoBranch</em>, assim dá para enviar com um nome diferente se quiser.
+
+<code>git checkout parte2
+vim parte2/testeparte2
+git commit -a -m "texto teste"
+git push origin parte2:parte2</code>
+
+Agora sim dá para ver que existe um branch, olha lá <a href="https://github.com/codexico/tutorial-github/network">https://github.com/codexico/tutorial-github/network</a>
+
+Quando não for mais usá-lo, o branch pode ser deletado com:
+
+<code>git branch -d nome-do-branch</code>
+
+Legal, já deu pra perceber que dá por exemplo para trabalhar em uma nova funcionalidade do projeto sem alterar o código principal. Quando tudo estiver pronto, os testes passaram e tal, pode ser feito o merge e só então enviar para o repositório.
+
+Pronto, acabou o básico sobre branch e merge com git.
+
+<h3>Branch e Merge exemplo 2</h3>
+
+Até agora foi muito básico, normalmente enquanto se está trabalhando num branch aparece um bug para ser arrumado no master, ou outro branch também está sendo trabalhado, ou seu sistema de desenvolvimento é dividido em produção, desenvolvimento, homologação e outros, são muitas possibilidades, cada lugar trabalha de uma maneira. Na parte 3 terá mais sobre isso.
+
+Agora um exemplo um pouquinho mais trabalhado:
+
+<code>git checkout -b funcionalidadeX
+touch funcionalidadeX
+git add .
+git commit -m "funcionalidadeX iniciada"
+vim funcionalidadeX
+git add .
+git commit -m "funcionalidadeX parcialmente executada"</code>
+
+Foi iniciado um branch para a funcionalidadeX e depois de alguns commits ela ainda não está finalizada.
+
+Então apareceu um bug no master que precisa ser corrigido rapidamente (colocar o link da parte2 antes do texto da parte2 do README, urgente né, o usuário é fogo).
+
+<code>git checkout -b bug42
+vim README
+git commit -a -m "bug 42 corrigido"
+git checkout master
+git merge --no-ff bug42
+git branch -d bug42</code>
+
+Foi criado um branch para o bug, o bug foi corrigido, voltou ao master, foi dado um merge para incluir as alterações no master e então o branch foi deletado. A opção <strong>--no-ff</strong> é utilizada para forçar a criação de um commit, sem ela o merge não cria commit e fica mais difícil recuperar o código anterior.
+
+ Agora é só completar a funcionalidade X.
+
+<code>git checkout funcionalidadeX
+vim funcionalidadeX
+git commit -a -m "funcionalidadeX finalizada"
+vim README
+git commit -a -m "README atualizado com a funcionalidadeX"
+git checkout master
+git merge --no-ff funcionalidadeX</code>
+
+Correu tudo bem? Pode ser que sim, o github vai fundir o código da funcionalidadeX com o master, que já contém a correção do bug. Mas e se a correção conflita com as alterações da funcionalidade X? Neste caso o git mostra um alerta e não permite o merge, mas mostra os conflitos:
+
+<code>git status</code>
+
+Os conflitos precisam ser corrigidos manualmente e então o merge será aceito. O git inclui marcações no código dos arquivos em conflito para ajudar na resolução do conflito.
+
+Com um fluxo de trabalho melhorzinho dá para evitar muitos conflitos, logo mais na Parte 3 do tutorial...
+
+No final os merges ficaram assim:
+<a href="http://codexico.com.br/blog/wp-content/uploads/2010/11/merge.png"><img src="http://codexico.com.br/blog/wp-content/uploads/2010/11/merge.png" alt="" title="branches" width="312" height="155" class="aligncenter size-full wp-image-363" /></a>
